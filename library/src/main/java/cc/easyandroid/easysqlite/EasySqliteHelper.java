@@ -83,7 +83,7 @@ public abstract class EasySqliteHelper extends SQLiteOpenHelper {
         DaoInfo daoInfo = DaoInfo.getDaoInfo(tableName);
         DataAccesObject<T> sqLiteDelegate = null;
         if (daoInfo == null) {
-            sqLiteDelegate = new SQLiteDelegate(this, tableName, tableManager.getTableMappingClass(tableName));
+            sqLiteDelegate = new SQLiteDelegate(this, tableName, tableManager.getTableMappingClass(tableName),onCreateGson());
             DaoInfo.addDaoInfo(tableName, sqLiteDelegate);
         } else {
             try {
