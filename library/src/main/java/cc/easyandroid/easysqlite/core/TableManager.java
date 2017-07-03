@@ -51,7 +51,7 @@ public class TableManager {
         }
         Class tableMappingClass = tableInfoMap.get(tableName);
         if (tableMappingClass == null) {// 没有就创建表
-            throw new IllegalArgumentException("tabName is not EXISTS");
+            throw new IllegalArgumentException("TABNAME is not EXISTS");
         }
         return tableMappingClass;
     }

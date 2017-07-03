@@ -21,7 +21,7 @@ public class DaoInfo {
         if (dao == null)
             throw new IllegalArgumentException("table info add error,because the DataAccesObject is null");
         if (tabName == null) {
-            throw new IllegalArgumentException("table info add error,because the tabName is null");
+            throw new IllegalArgumentException("table info add error,because the TABNAME is null");
         }
         DaoInfo daoInfo = daoMap.get(tabName);
         if (daoInfo == null) {// 没有就创建表

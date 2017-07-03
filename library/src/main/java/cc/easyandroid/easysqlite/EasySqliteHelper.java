@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.gson.Gson;
+
 import cc.easyandroid.easysqlite.abs.DataAccesObject;
 import cc.easyandroid.easysqlite.core.DaoInfo;
 import cc.easyandroid.easysqlite.core.EasyDbObject;
@@ -91,6 +93,10 @@ public abstract class EasySqliteHelper extends SQLiteOpenHelper {
             }
         }
         return sqLiteDelegate;
+    }
+
+    protected Gson onCreateGson() {
+        return new Gson();
     }
 
 }
