@@ -2,10 +2,12 @@ package cc.easyandroid.easysqlite;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 
 import com.google.gson.Gson;
 
@@ -26,13 +28,17 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     protected final SQLiteOpenHelper helper;
     protected final String TABNAME;
     protected final Class<T> CLAZZ;
+    private final Context mContext;
+    public final String BASE_URI_STRING = "content://easysqlite";//后面可以跟上tabname
+    public final Uri CONTENT_URI;
 
-
-    public SQLiteDelegate(SQLiteOpenHelper helper, String TABNAME, Class<T> CLAZZ, Gson gson) {
+    public SQLiteDelegate(Context context, SQLiteOpenHelper helper, String TABNAME, Class<T> CLAZZ, Gson gson) {
         this.helper = helper;
         this.TABNAME = TABNAME;
         this.CLAZZ = CLAZZ;
         this.GSON = gson;
+        mContext = context;
+        CONTENT_URI = Uri.parse(BASE_URI_STRING + "/" + TABNAME);
     }
 
     @Override
@@ -43,8 +49,12 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         contentValues.put(CREATEDTIME, System.currentTimeMillis());
         contentValues.put(GSONSTRING, GSON.toJson(dto));
         long rowid = db.replace(TABNAME, null, contentValues);
-        if (rowid == -1)
+        if (rowid == -1) {
             throw new SQLiteException("Error inserting " + dto.getClass().toString());
+        } else {
+            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+        }
+
     }
 
     @Override
@@ -59,6 +69,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
+            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
         }
     }
 
@@ -97,6 +108,9 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         String whereClause = ID + "=?";
         String[] whereArgs = {id};
         int confirm = db.delete(TABNAME, whereClause, whereArgs);
+        if (confirm != 0) {
+            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+        }
         return confirm != 0;
     }
 
@@ -104,6 +118,9 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     public synchronized boolean deleteAll() throws Exception {
         SQLiteDatabase db = getDb();
         int confirm = db.delete(TABNAME, null, null);
+        if (confirm != 0) {
+            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+        }
         return confirm != 0;
     }
 

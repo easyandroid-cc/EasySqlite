@@ -20,8 +20,11 @@ public abstract class EasySqliteHelper extends SQLiteOpenHelper {
 
     private volatile boolean isCreated = false;
 
+    private Context mContext;
+
     public EasySqliteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int newVersion) {
         super(context, name, factory, newVersion);//如果是升级onUpgrade方法会先执行
+        mContext = context;
         tableManager = new TableManager();
         getWritableDatabase();
     }
@@ -83,7 +86,7 @@ public abstract class EasySqliteHelper extends SQLiteOpenHelper {
         DaoInfo daoInfo = DaoInfo.getDaoInfo(tableName);
         DataAccesObject<T> sqLiteDelegate = null;
         if (daoInfo == null) {
-            sqLiteDelegate = new SQLiteDelegate(this, tableName, tableManager.getTableMappingClass(tableName),onCreateGson());
+            sqLiteDelegate = new SQLiteDelegate(mContext, this, tableName, tableManager.getTableMappingClass(tableName), onCreateGson());
             DaoInfo.addDaoInfo(tableName, sqLiteDelegate);
         } else {
             try {
