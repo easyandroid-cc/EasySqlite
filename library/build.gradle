@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -34,8 +34,8 @@ allprojects {
     }
 }
 dependencies {
-    provided 'com.android.support:support-v4:23.+'
-    provided 'com.google.code.gson:gson:2.2.4'
+    compileOnly 'com.android.support:support-v4:27.1.1'
+    compileOnly 'com.google.code.gson:gson:2.2.4'
 }
 publish {
     userOrg = 'cgpllx'      //bintray注册的用户名

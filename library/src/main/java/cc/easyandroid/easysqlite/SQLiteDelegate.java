@@ -13,6 +13,9 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Observer;
+import java.util.Vector;
 
 import cc.easyandroid.easysqlite.abs.DataAccesObject;
 import cc.easyandroid.easysqlite.core.EasyDbObject;
@@ -25,14 +28,14 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     public static final String ID = "id";
     public static final String CREATEDTIME = "createdTime";
     public static final String GSONSTRING = "gson";
-    protected final SQLiteOpenHelper helper;
+    protected final EasySqliteHelper helper;
     protected final String TABNAME;
     protected final Class<T> CLAZZ;
     private final Context mContext;
     public final String BASE_URI_STRING = "content://easysqlite";//后面可以跟上tabname
     public final Uri CONTENT_URI;
 
-    public SQLiteDelegate(Context context, SQLiteOpenHelper helper, String TABNAME, Class<T> CLAZZ, Gson gson) {
+    public SQLiteDelegate(Context context, EasySqliteHelper helper, String TABNAME, Class<T> CLAZZ, Gson gson) {
         this.helper = helper;
         this.TABNAME = TABNAME;
         this.CLAZZ = CLAZZ;
@@ -53,6 +56,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
             throw new SQLiteException("Error inserting " + dto.getClass().toString());
         } else {
             mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+            notifyChange(TABNAME);
         }
 
     }
@@ -70,6 +74,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         } finally {
             db.endTransaction();
             mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+            notifyChange(TABNAME);
         }
     }
 
@@ -110,6 +115,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         int confirm = db.delete(TABNAME, whereClause, whereArgs);
         if (confirm != 0) {
             mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+            notifyChange(TABNAME);
         }
         return confirm != 0;
     }
@@ -120,8 +126,17 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         int confirm = db.delete(TABNAME, null, null);
         if (confirm != 0) {
             mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+            notifyChange(TABNAME);
         }
         return confirm != 0;
+    }
+
+    private void notifyChange(String tabname) {
+        if (listeners.size() > 0) {
+            for (OnDataChangedListener listener : listeners) {
+                listener.onChanged();
+            }
+        }
     }
 
     @Override
@@ -157,6 +172,27 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         return db.query(TABNAME, null, null, null, null, null, orderBy);
     }
 
+    List<OnDataChangedListener> listeners = new ArrayList<>();
+
+    @Override
+    public synchronized void addOnDataChangedListener(OnDataChangedListener listener) {
+        if (listener == null)
+            throw new NullPointerException();
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    @Override
+    public synchronized void removeOnDataChangedListener(OnDataChangedListener listener) {
+        listeners.remove(listener);
+    }
+
+    @Override
+    public synchronized void removeAllOnDataChangedListener() {
+        listeners.clear();
+    }
+
     /**
      * @param orderBy eg "_id" DESC  时间正序还是倒序
      * @return ArrayList
@@ -174,4 +210,5 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         }
         return mSQLiteDatabase;
     }
+
 }

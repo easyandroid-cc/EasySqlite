@@ -27,5 +27,13 @@ public interface DataAccesObject<T extends EasyDbObject> {
 
     Cursor findAllCursor(String orderBy);
 
+    void addOnDataChangedListener(OnDataChangedListener listener);
 
+    void removeOnDataChangedListener(OnDataChangedListener listener);
+
+    void removeAllOnDataChangedListener();
+
+    interface OnDataChangedListener {
+        void onChanged();
+    }
 }
