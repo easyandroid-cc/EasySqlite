@@ -31,7 +31,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     protected final EasySqliteHelper helper;
     protected final String TABNAME;
     protected final Class<T> CLAZZ;
-    private final Context mContext;
+   // private final Context mContext;
     public final String BASE_URI_STRING = "content://easysqlite";//后面可以跟上tabname
     public final Uri CONTENT_URI;
 
@@ -40,7 +40,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         this.TABNAME = TABNAME;
         this.CLAZZ = CLAZZ;
         this.GSON = gson;
-        mContext = context;
+       // mContext = context;
         CONTENT_URI = Uri.parse(BASE_URI_STRING + "/" + TABNAME);
     }
 
@@ -55,7 +55,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         if (rowid == -1) {
             throw new SQLiteException("Error inserting " + dto.getClass().toString());
         } else {
-            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+          //  mContext.getContentResolver().notifyChange(CONTENT_URI, null);
             notifyChange(TABNAME);
         }
 
@@ -73,7 +73,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+           // mContext.getContentResolver().notifyChange(CONTENT_URI, null);
             notifyChange(TABNAME);
         }
     }
@@ -114,7 +114,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         String[] whereArgs = {id};
         int confirm = db.delete(TABNAME, whereClause, whereArgs);
         if (confirm != 0) {
-            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+          //  mContext.getContentResolver().notifyChange(CONTENT_URI, null);
             notifyChange(TABNAME);
         }
         return confirm != 0;
@@ -125,7 +125,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         SQLiteDatabase db = getDb();
         int confirm = db.delete(TABNAME, null, null);
         if (confirm != 0) {
-            mContext.getContentResolver().notifyChange(CONTENT_URI, null);
+            //mContext.getContentResolver().notifyChange(CONTENT_URI, null);
             notifyChange(TABNAME);
         }
         return confirm != 0;
