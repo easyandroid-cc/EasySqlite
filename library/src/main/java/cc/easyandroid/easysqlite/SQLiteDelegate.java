@@ -33,7 +33,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
     protected final Class<T> CLAZZ;
    // private final Context mContext;
     public final String BASE_URI_STRING = "content://easysqlite";//后面可以跟上tabname
-    public final Uri CONTENT_URI;
+    //public final Uri CONTENT_URI;
 
     public SQLiteDelegate(Context context, EasySqliteHelper helper, String TABNAME, Class<T> CLAZZ, Gson gson) {
         this.helper = helper;
@@ -41,7 +41,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
         this.CLAZZ = CLAZZ;
         this.GSON = gson;
        // mContext = context;
-        CONTENT_URI = Uri.parse(BASE_URI_STRING + "/" + TABNAME);
+       // CONTENT_URI = Uri.parse(BASE_URI_STRING + "/" + TABNAME);
     }
 
     @Override
@@ -61,6 +61,26 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
 
     }
 
+//    ContentValues cv = new ContentValues();
+//cv.put("username", "lanxiao");
+//cv.put("password", "123456");
+//    String[] args = {String.valueOf("lanxiaofang")};
+//    update("user",cv, "username=?",args)
+    @Override
+    public void update(T dto) {
+        SQLiteDatabase db = getDb();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ID, dto.buildKeyColumn());
+        contentValues.put(GSONSTRING, GSON.toJson(dto));
+        String[] args = {dto.buildKeyColumn()};
+        long rowid = db.update(TABNAME,  contentValues,ID+"=?",args);
+        if (rowid == -1) {
+            throw new SQLiteException("Error inserting " + dto.getClass().toString());
+        } else {
+            notifyChange(TABNAME);
+        }
+    }
+
     @Override
     public void insertAll(ArrayList<T> arrayList) throws Exception {
         SQLiteDatabase db = getDb();
@@ -77,6 +97,7 @@ public class SQLiteDelegate<T extends EasyDbObject> implements DataAccesObject<T
             notifyChange(TABNAME);
         }
     }
+
 
     @Override
     public T findById(String id, Type type) throws Exception {

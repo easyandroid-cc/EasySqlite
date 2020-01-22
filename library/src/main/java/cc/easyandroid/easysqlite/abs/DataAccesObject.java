@@ -13,6 +13,8 @@ public interface DataAccesObject<T extends EasyDbObject> {
 
     void insertAll(ArrayList<T> arrayList) throws Exception;
 
+    void update(T dto);
+
     T findById(String id, Type type) throws Exception;
 
     T findById(String id) throws Exception;
