@@ -1,6 +1,6 @@
 package cc.easyandroid.easysqlite.core;
 
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import cc.easyandroid.easysqlite.EasySqliteLog;
 import cc.easyandroid.easysqlite.abs.DataAccesObject;

@@ -2,7 +2,7 @@ package cc.easyandroid.easysqlite.core;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import java.util.Locale;
 import java.util.Set;
