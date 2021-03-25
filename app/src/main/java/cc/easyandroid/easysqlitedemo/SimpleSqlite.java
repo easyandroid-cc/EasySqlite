@@ -43,4 +43,5 @@ public class SimpleSqlite extends EasySqliteHelper {
             e.printStackTrace();
         }
     }
+
 }
