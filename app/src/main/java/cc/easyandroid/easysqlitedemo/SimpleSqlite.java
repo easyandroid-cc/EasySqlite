@@ -13,7 +13,7 @@ import cc.easyandroid.easysqlite.core.TableManager;
  */
 public class SimpleSqlite extends EasySqliteHelper {
     static final int VERSION = 24;//第一个版本要是0
-    static final String DBNAME = "EasyEndroidDB";
+    static final String DBNAME = "EasyAndroidDB";
 
     public SimpleSqlite(Context context) {
         super(context, DBNAME, null, VERSION);
@@ -21,7 +21,6 @@ public class SimpleSqlite extends EasySqliteHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db,TableManager tableManager) {
-        System.out.println("easyandroid SimpleSqlite onCreate=" + "SimpleSqlite onCreate");
         try {
             tableManager.createTable("a1", Tab.class);
             tableManager.createTable("a2", Tab.class);
